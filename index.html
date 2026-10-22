@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>클립 상품영상 스튜디오</title>
+<meta name="description" content="상품 사진으로 네이버 클립용 세로형 홍보 영상·표지·게시글을 브라우저에서 바로 만드는 도구">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap">
+<link rel="stylesheet" href="web/app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brandline">
+    <h1>클립 상품영상 스튜디오</h1>
+    <span class="sub">상품 사진으로 세로형 홍보 영상·게시글 만들기 · 웹 버전(사진과 영상은 이 브라우저에만 저장, 서버로 전송 안 함)</span>
+  </div>
+  <div id="statusChips" class="chips" aria-label="연결 상태"></div>
+</header>
+
+<div class="productbar">
+  <label for="productSelect">상품</label>
+  <select id="productSelect"></select>
+  <button id="newProductBtn" class="btn ghost">새 상품</button>
+  <button id="deleteProductBtn" class="btn ghost danger" hidden>삭제</button>
+  <span id="saveState" class="muted small"></span>
+</div>
+
+<nav class="steps" id="steps">
+  <button data-step="1"><b>1</b> 사진 업로드</button>
+  <button data-step="2"><b>2</b> 상품 정보 확인</button>
+  <button data-step="3"><b>3</b> 자동 생성</button>
+  <button data-step="4"><b>4</b> 미리보기·수정·다운로드</button>
+</nav>
+
+<main>
+  <!-- 1. 사진 -->
+  <section class="step" data-step="1">
+    <div class="card">
+      <div class="row between wrap">
+        <h2>상품 사진 <span id="photoCount" class="pill">0 / 10</span></h2>
+        <div class="row wrap gap">
+          <button id="suggestOrderBtn" class="btn ghost">역할 기준 순서 제안</button>
+          <button id="analyzeBtn" class="btn ghost" disabled>사진 자동 분석 (웹 버전 미지원)</button>
+        </div>
+      </div>
+      <p class="muted">5~10장을 올리세요. 원본 사진의 형태·색상·라벨·로고·수량은 바꾸지 않고, 영상에서는 크기와 위치만 부드럽게 움직입니다.</p>
+      <label class="drop" id="dropZone">
+        <input type="file" id="photoInput" accept="image/*" multiple>
+        <span><b>사진을 끌어다 놓거나 눌러서 선택</b><br><span class="muted small">JPG·PNG·WEBP, 최대 10장</span></span>
+      </label>
+      <div class="row wrap gap">
+        <label class="btn ghost small-btn"><input type="file" id="replaceInput" accept="image/*" multiple hidden>같은 상품 사진 모두 교체</label>
+        <span class="muted small" id="analyzeNote"></span>
+      </div>
+      <p class="muted small">순서 바꾸기: PC는 카드를 끌어서 놓고, 휴대폰은 ◀ ▶ 버튼을 누르세요. 이 순서가 영상 장면 순서가 됩니다.</p>
+      <div id="photoGrid" class="photo-grid"></div>
+    </div>
+    <div class="nav-foot"><button class="btn primary" data-goto="2">다음: 상품 정보 확인</button></div>
+  </section>
+
+  <!-- 2. 정보 -->
+  <section class="step" data-step="2">
+    <form class="card" id="productForm" autocomplete="off">
+      <h2>필수 정보</h2>
+      <div class="grid2">
+        <label>브랜드명 <em>필수</em><input name="brand" required maxlength="40"></label>
+        <label>상품명 <em>필수</em><input name="name" required maxlength="60"></label>
+      </div>
+      <label>상품 구매 링크 또는 제휴 링크 <em>필수</em>
+        <input name="link" required inputmode="url" spellcheck="false" placeholder="https://...">
+        <span class="hint">입력한 주소를 그대로 보존합니다. 제휴 추적용 쿼리 문자열(?…)도 바꾸거나 지우지 않습니다.</span>
+      </label>
+      <fieldset>
+        <legend>확인된 상품 특징 (1~3개) <em>필수</em></legend>
+        <p class="hint">직접 확인한 사실만 짧게 적어 주세요. 앱은 성분·효능·원산지·인증·판매량·할인율 등을 임의로 추가하지 않습니다.</p>
+        <input name="feature0" maxlength="40" placeholder="예: 밀폐 잠금 뚜껑">
+        <input name="feature1" maxlength="40" placeholder="(선택) 두 번째 특징">
+        <input name="feature2" maxlength="40" placeholder="(선택) 세 번째 특징">
+      </fieldset>
+
+      <h2>선택 정보</h2>
+      <div class="grid2">
+        <label>주요 고객<input name="target" maxlength="30" placeholder="예: 직장인"></label>
+        <label>사용 상황<input name="situation" maxlength="30" placeholder="예: 출근길"></label>
+        <label>가격<input name="price" maxlength="30" placeholder="예: 19,900원 (확인한 가격)"></label>
+        <label>원하는 말투<select name="tone"></select></label>
+        <label>행사 정보<input name="promo" maxlength="40" placeholder="예: 구매 시 파우치 증정"></label>
+        <label>행사 적용 기간<input name="promo_period" maxlength="40" placeholder="예: 10/20~10/31"></label>
+      </div>
+      <label>게시글에 사용할 경제적 이해관계 표시 문구
+        <textarea name="disclosure" rows="2" maxlength="150"></textarea>
+        <span class="hint">사용자가 제공하거나 최신 공식 안내에서 확인한 문구를 그대로 사용하며, 앱이 줄이거나 바꾸지 않습니다.
+          <button type="button" class="linkbtn" id="disclosureExample">예시 문구 넣기</button> (예시는 반드시 최신 공식 안내와 대조하세요)</span>
+      </label>
+      <div class="grid2">
+        <label>반드시 넣을 표현<textarea name="must_include" rows="2" placeholder="쉼표 또는 줄바꿈으로 구분"></textarea></label>
+        <label>제외할 표현<textarea name="exclude" rows="2" placeholder="쉼표 또는 줄바꿈으로 구분"></textarea></label>
+      </div>
+      <div id="productCheck"></div>
+      <div class="row gap wrap">
+        <button class="btn primary" type="submit">정보 저장</button>
+        <span class="muted small" id="formSaved"></span>
+      </div>
+    </form>
+    <div class="nav-foot"><button class="btn" data-goto="1">이전</button><button class="btn primary" data-goto="3">다음: 자동 생성</button></div>
+  </section>
+
+  <!-- 3. 생성 -->
+  <section class="step" data-step="3">
+    <div class="card">
+      <h2>생성 설정</h2>
+      <p class="muted small" id="defaultsNote"></p>
+      <div id="settingsHost3"></div>
+      <div id="genCheck"></div>
+      <div class="row gap wrap">
+        <button class="btn primary big" id="generateBtn">초안 만들고 영상 생성</button>
+      </div>
+      <div id="capsBox"></div>
+      <p class="muted small">기존 초안이 있으면 장면·자막·게시글을 새로 만듭니다(직접 수정한 내용은 초기화). 수정만 반영하려면 4단계의 ‘수정 반영해 다시 생성’을 쓰세요.</p>
+    </div>
+  </section>
+
+  <!-- 4. 결과 -->
+  <section class="step" data-step="4">
+    <div class="result-layout">
+      <div class="col-left">
+        <div class="card">
+          <h2>완성 영상</h2>
+          <div id="jobPanel"></div>
+          <div id="videoPanel" class="video-panel"><p class="muted">아직 생성된 영상이 없습니다.</p></div>
+        </div>
+        <div class="card">
+          <h2>상품 확인</h2>
+          <dl class="kv" id="productKv"></dl>
+        </div>
+        <div class="card">
+          <div class="row between wrap">
+            <h2>게시글</h2>
+            <span id="postCount" class="count">0 / 300</span>
+          </div>
+          <label class="check"><input type="checkbox" id="postIncludeLink"> 게시글에 구매 링크 포함 (링크 길이도 글자 수에 포함)</label>
+          <textarea id="postText" rows="10" spellcheck="false"></textarea>
+          <div id="postMsgs"></div>
+          <div class="row gap wrap">
+            <button class="btn" id="rebuildPostBtn">게시글 다시 작성</button>
+            <button class="btn primary" id="copyPostBtn">게시글 복사</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="card">
+          <div class="row between wrap">
+            <h2>장면 수정 <span id="totalDur" class="pill"></span></h2>
+            <span class="muted small" id="projSave"></span>
+          </div>
+          <label>첫 문장 후보
+            <select id="hookSelect"></select>
+          </label>
+          <div id="sceneCheck"></div>
+          <div id="sceneList" class="scene-list"></div>
+          <div class="row gap wrap sticky-actions">
+            <button class="btn primary" id="rerenderBtn">수정 반영해 다시 생성</button>
+            <button class="btn ghost" id="redraftBtn">초안 다시 만들기</button>
+          </div>
+        </div>
+        <details class="card" id="settingsDetails" open>
+          <summary><h2>음악·자막 설정</h2></summary>
+          <div id="settingsHost4"></div>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- 공용 설정 패널 (3·4단계에서 같은 요소를 옮겨 씀) -->
+<template id="settingsTpl">
+  <div class="settings" id="settingsPanel">
+    <div class="set-group">
+      <h3>영상</h3>
+      <div class="grid2">
+        <label>길이
+          <select data-set="duration"><option value="15">15초</option><option value="25">25초 (기본)</option><option value="35">35초</option></select>
+          <span class="hint" data-only="4">길이를 바꾸면 ‘초안 다시 만들기’로 장면을 다시 구성하세요.</span>
+        </label>
+        <label>화질
+          <select data-set="quality"><option value="final">최종 1080×1920 · 30fps</option><option value="preview">빠른 미리보기 540×960 (업로드용 아님)</option></select>
+        </label>
+        <label>사진 배치
+          <select data-set="photo_mode"><option value="fit">맞춤 — 제품 전체가 보이게 (권장)</option><option value="fill">채우기 — 화면 가득 (가장자리 잘릴 수 있음)</option></select>
+        </label>
+        <label>장면 전환
+          <select data-set="transition"><option value="fade">부드럽게 겹치기</option><option value="none">바로 전환</option></select>
+        </label>
+      </div>
+    </div>
+    <div class="set-group">
+      <h3>배경음악</h3>
+      <div id="musicList" class="music-list"></div>
+      <details class="upload-music">
+        <summary>음악 직접 올리기</summary>
+        <form id="musicForm" class="grid2">
+          <label>음악 파일<input type="file" name="file" accept="audio/*" required></label>
+          <label>제목<input name="title" maxlength="60"></label>
+          <label>출처 <em>필수</em><input name="source" required maxlength="200" placeholder="예: 구매처·제작자·URL"></label>
+          <label>라이선스 <em>필수</em><input name="license_name" required maxlength="100" placeholder="예: 상업 이용 가능 라이선스명"></label>
+          <label class="check span2"><input type="checkbox" name="confirmed" value="true" required> 상업적 이용과 결과 영상 배포가 허용된 음악임을 확인했습니다.</label>
+          <button class="btn span2" type="submit">음악 올리기</button>
+        </form>
+      </details>
+      <div class="grid3">
+        <label>음악 볼륨 <output data-out="music_gain_db"></output><input type="range" min="-30" max="0" step="1" data-set="music_gain_db"></label>
+        <label>페이드인(초) <output data-out="fade_in"></output><input type="range" min="0" max="4" step="0.5" data-set="fade_in"></label>
+        <label>페이드아웃(초) <output data-out="fade_out"></output><input type="range" min="0" max="5" step="0.5" data-set="fade_out"></label>
+        <label>전체 음량 <output data-out="master_gain_db"></output><input type="range" min="-12" max="6" step="1" data-set="master_gain_db"></label>
+      </div>
+    </div>
+    <div class="set-group">
+      <h3>한국어 내레이션</h3>
+      <div class="msg warn">웹 버전에서는 내레이션을 만들 수 없습니다. 브라우저 음성은 파일로 녹음할 수 없고, 유료 음성 API 키를 브라우저에 넣으면 노출되기 때문입니다.
+        영상은 자막과 배경음악으로 완성됩니다. 내레이션이 필요하면 PC용 로컬 버전(<a href="https://github.com/subinclipstudio/subinclipstudio.github.io#pc용-로컬-버전" target="_blank" rel="noopener">local-version</a>)을 사용하세요.</div>
+    </div>
+    <div class="set-group">
+      <h3>구매 안내 · 표시 문구</h3>
+      <div class="grid2">
+        <label>구매 링크를 둘 위치
+          <select data-set="cta_mode"></select>
+          <span class="hint">링크를 실제로 둘 위치를 고르세요. 확인 전에는 ‘아래 링크 클릭’ 같은 문구를 쓰지 않고 중립 문구를 씁니다.</span>
+        </label>
+        <label>구매 안내 문구 직접 입력<input data-set="cta_custom" maxlength="30" placeholder="‘직접 입력’ 선택 시 사용"></label>
+        <label>영상에 표시할 주소 텍스트(선택)<input data-set="url_text" maxlength="40" placeholder="예: smartstore.naver.com/…">
+          <span class="hint">영상 속 주소는 눌러도 열리지 않습니다. 실제 구매 링크는 게시글과 ‘링크 복사’로 제공합니다.</span></label>
+        <label>영상 내 광고 표시 문구(선택)<input data-set="video_disclosure" maxlength="30" placeholder="예: 광고 · 수수료 제공">
+          <span class="hint">영상 전체 구간 왼쪽 위에 작게 표시합니다. 최신 공식 안내에 맞는 문구를 쓰세요.</span></label>
+        <label>게시글 표시 문구 위치
+          <select data-set="disclosure_position"><option value="top">게시글 처음</option><option value="bottom">게시글 끝</option></select></label>
+        <label class="check"><input type="checkbox" data-set="show_price"> 입력한 가격을 영상·게시글에 표시</label>
+        <label class="check"><input type="checkbox" data-set="post_include_link"> 게시글에 구매 링크 포함</label>
+      </div>
+    </div>
+    <div class="set-group">
+      <h3>자막 위치 · 안전 여백</h3>
+      <div class="grid3">
+        <label>자막 위치
+          <select data-set="caption_pos"><option value="bottom">아래 (권장)</option><option value="top">위</option><option value="middle">가운데 (제품을 가릴 수 있음)</option></select></label>
+        <label>위아래 미세 조정 <output data-out="caption_offset"></output><input type="range" min="-0.1" max="0.1" step="0.01" data-set="caption_offset"></label>
+        <label>자막 크기 <output data-out="caption_scale"></output><input type="range" min="0.8" max="1.2" step="0.05" data-set="caption_scale"></label>
+        <label>위쪽 여백 <output data-out="safe_top"></output><input type="range" min="0.02" max="0.15" step="0.01" data-set="safe_top"></label>
+        <label>아래쪽 여백 <output data-out="safe_bottom"></output><input type="range" min="0.08" max="0.30" step="0.01" data-set="safe_bottom"></label>
+        <label>좌우 여백 <output data-out="safe_side"></output><input type="range" min="0.03" max="0.12" step="0.01" data-set="safe_side"></label>
+      </div>
+      <p class="hint">여백 안쪽에만 자막을 배치합니다. 장면의 ‘미리보기’로 플랫폼 UI가 겹칠 수 있는 영역(빨간색)을 확인하세요.</p>
+    </div>
+    <div class="set-group">
+      <h3>표지 이미지</h3>
+      <div class="grid2">
+        <label>표지에 쓸 장면<select data-set="cover_scene"></select></label>
+        <label>표지 문구(비우면 첫 문장)<input data-set="cover_text" maxlength="40"></label>
+      </div>
+    </div>
+  </div>
+</template>
+
+<div id="modal" class="modal" hidden>
+  <div class="modal-box">
+    <div class="row between"><b id="modalTitle"></b><button class="btn ghost" id="modalClose">닫기</button></div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+<div id="toast" class="toast" hidden></div>
+<script src="web/vendor/mp4-muxer.js"></script>
+<script type="module" src="web/js/app.js"></script>
+</body>
+</html>

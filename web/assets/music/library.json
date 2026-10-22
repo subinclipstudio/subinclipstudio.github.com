@@ -1,0 +1,50 @@
+[
+  {
+    "id": "bright",
+    "file": "bright.m4a",
+    "title": "밝고 경쾌한 분위기 — Sunny Shelf",
+    "mood": "밝고 경쾌한 분위기",
+    "bpm": 112,
+    "duration": 34.29,
+    "source": "클립 상품영상 스튜디오 내장 생성기 (app/music_gen.py v1.0) → AAC 160k 변환",
+    "license": "CC0 1.0",
+    "license_note": "클립 상품영상 스튜디오가 코드로 직접 합성한 음원입니다. 외부 음원·샘플·루프를 사용하지 않았습니다. CC0 1.0(퍼블릭 도메인 헌정)으로 제공되어 상업적 이용과 결과 영상 배포가 허용됩니다.",
+    "commercial_use": true,
+    "redistribution_in_video": true,
+    "created": "2026-10-22",
+    "sha256": "ca80b315809bb45cee70512b381a9100d2a4f601d92fbb3ee3def4583bcb5881",
+    "builtin": true
+  },
+  {
+    "id": "calm",
+    "file": "calm.m4a",
+    "title": "차분하고 고급스러운 분위기 — Velvet Room",
+    "mood": "차분하고 고급스러운 분위기",
+    "bpm": 72,
+    "duration": 33.33,
+    "source": "클립 상품영상 스튜디오 내장 생성기 (app/music_gen.py v1.0) → AAC 160k 변환",
+    "license": "CC0 1.0",
+    "license_note": "클립 상품영상 스튜디오가 코드로 직접 합성한 음원입니다. 외부 음원·샘플·루프를 사용하지 않았습니다. CC0 1.0(퍼블릭 도메인 헌정)으로 제공되어 상업적 이용과 결과 영상 배포가 허용됩니다.",
+    "commercial_use": true,
+    "redistribution_in_video": true,
+    "created": "2026-10-22",
+    "sha256": "b08189e151c05175c9fb1366fa0e483b49b25a7838cbe0ac725953e3f8bb1d83",
+    "builtin": true
+  },
+  {
+    "id": "warm",
+    "file": "warm.m4a",
+    "title": "따뜻하고 편안한 분위기 — Cozy Morning",
+    "mood": "따뜻하고 편안한 분위기",
+    "bpm": 88,
+    "duration": 32.73,
+    "source": "클립 상품영상 스튜디오 내장 생성기 (app/music_gen.py v1.0) → AAC 160k 변환",
+    "license": "CC0 1.0",
+    "license_note": "클립 상품영상 스튜디오가 코드로 직접 합성한 음원입니다. 외부 음원·샘플·루프를 사용하지 않았습니다. CC0 1.0(퍼블릭 도메인 헌정)으로 제공되어 상업적 이용과 결과 영상 배포가 허용됩니다.",
+    "commercial_use": true,
+    "redistribution_in_video": true,
+    "created": "2026-10-22",
+    "sha256": "5f209bc58cde696c28c73f2f25519a6e3f4f0d2715f6cecf7bc5332a7ac0bb04",
+    "builtin": true
+  }
+]
