@@ -23,11 +23,11 @@
 - 내레이션과 사진 자동 분석은 웹 버전에서 뺐습니다. 브라우저 음성은 파일로 녹음할 수 없고, 유료 API 키를 브라우저 코드에 넣으면 누구나 볼 수 있기 때문입니다.
 - 웹 버전 파일: `index.html`, `web/` (영상 묶기에 MIT 라이선스 [mp4-muxer](https://github.com/Vanilagy/mp4-muxer) 5.2.1 사용, `web/vendor/`)
 
-### GitHub Pages 설정 (저장소 관리자용)
+### GitHub Pages 배포 (저장소 관리자용)
 
-1. 저장소 이름이 `subinclipstudio.github.io` 여야 https://subinclipstudio.github.io 로 열립니다. (Settings → General → Repository name)
-2. Settings → Pages → Build and deployment 에서 Source: **Deploy from a branch**, Branch: **main / (root)** 를 선택합니다.
-3. 1~2분 뒤 주소로 접속합니다.
+- 이 저장소의 `main` 브랜치 루트가 그대로 https://subinclipstudio.github.io 로 배포됩니다(빌드 과정 없음, `.nojekyll` 포함).
+- 저장소 이름은 현재 `subinclipstudio.github.com` 이며 이 이름으로도 위 주소에서 정상 동작합니다. GitHub의 현재 권장 이름은 `subinclipstudio.github.io` 이므로, 나중에 문제가 생기면 Settings → General 에서 이름을 바꾸세요(기존 주소는 GitHub가 자동으로 연결해 줍니다).
+- 수정 사항을 `main` 에 올리면 1~2분 뒤 사이트에 반영됩니다.
 
 ---
 
